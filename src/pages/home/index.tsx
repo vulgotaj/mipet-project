@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { BsCartPlus } from 'react-icons/bs';
 import { api } from '../../services/api';
+import { CartContext } from '../../contexts/CartContext';
 
-interface ProductProps {
+export interface ProductProps {
     id: number;
     title: string;
     description: string;
@@ -12,6 +13,7 @@ interface ProductProps {
 
 export function Home() {
     const [products, setProducts] = useState<ProductProps[]>([]);
+    const { addItemCart } = useContext(CartContext);
 
     useEffect(() => {
         async function getProducts() {
@@ -21,6 +23,10 @@ export function Home() {
 
         getProducts();
     }, [])
+
+    function handleAddCartItem(product: ProductProps) {
+        addItemCart(product);
+    }
 
     return (
         <main className="w-full max-w-7xl px-5 mx-auto py-10">
@@ -46,7 +52,7 @@ export function Home() {
                                 })}
                             </strong>
                             
-                            <button className="w-10 h-8 rounded-md bg-gray-800 flex items-center justify-center cursor-pointer">
+                            <button onClick={ () => handleAddCartItem(product) }className="w-10 h-8 rounded-md bg-gray-800 flex items-center justify-center cursor-pointer">
                                 <BsCartPlus size={20} color="#FFF"/>                   {/* BOTÃO CARRINHO */}
                             </button>
                         </div> {/* FECHAMENTO DA AREA DE PREÇOS / CARRINHO */}

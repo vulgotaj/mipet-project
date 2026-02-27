@@ -1,35 +1,59 @@
+import { useContext } from 'react';
+import { CartContext } from '../../contexts/CartContext';
+import { Link } from 'react-router';
+
+
 export function Cart() {
+    const { cart, total, addItemCart, removeItemCart } = useContext(CartContext);
+
     return (
         <div className="w-full max-w-7xl mx-auto">
             <h1 className="font-medium text-2xl text-center my-4">Meu carrinho</h1>
 
-            <section className="flex items-center justify-between border-b-2 border-gray">
-                <img
-                  className="w-28"
-                  src=""
-                  alt="Logo do Produto"
-                />
+            {cart.length === 0 && (
+                <div className="flex flex-col items-center justify-center">
+                    <p className="font-medium">Seu carrinho está vazio!</p>
+                    <Link to="/" className="bg-slate-600 my-3 p-1 px-3 text-white font-medium rounded">
+                        Acessar produtos
+                    </Link>
+                </div>
+            )}
 
-                <strong>Preço: R$2402,00</strong>
+            {cart.map(item => (
+                <section className="flex items-center justify-between border-b-2 border-gray">
+                    <img
+                    className="w-28"
+                    src={item.cover}
+                    alt={item.title}
+                    />
+
+                <strong>Preço: {item.price.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                })}</strong>
 
                 <div className="flex items-center justify-center gap-3">
-                    <button className="bg-slate-600 px-2 rounded text-white font-medium flex items-center justify-center">
+                    <button onClick={() => removeItemCart(item)} className="bg-slate-600 px-2 rounded text-white font-medium flex items-center justify-center">
                         -
                     </button>
 
-                    2
+                    {item.amount}
 
-                    <button className="bg-slate-600 px-2 rounded text-white font-medium flex items-center justify-center">
+                    <button onClick={() => addItemCart(item)} className="bg-slate-600 px-2 rounded text-white font-medium flex items-center justify-center">
                         +
                     </button>
                 </div>
 
                 <strong className="float-right">
-                    Subtotal: R$4804,00
+                    Subtotal: {item.total.toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL'
+                    })}
                 </strong>
             </section>
+            ))}
 
-            <p className="font-bold mt-4">Total: R$4804,00</p>
+            {cart.length !== 0 && <p className="font-bold mt-4">Total: {total}</p>}
         </div>
     )
 }
